@@ -93,11 +93,30 @@ export const getExplanation = async (topic: string, fraction?: Fraction): Promis
   return FALLBACK_EXPLANATIONS[randomIndex];
 };
 
-export const generateWordProblem = async (): Promise<{ story: string; question: string; n1: number; d1: number; n2: number; d2: number; op: 'add'|'sub' } | null> => {
-  // Add a small delay to simulate loading (optional, can be removed)
-  await new Promise(resolve => setTimeout(resolve, 400));
-  
-  // Select a random problem
-  const randomIndex = Math.floor(Math.random() * FALLBACK_PROBLEMS.length);
-  return FALLBACK_PROBLEMS[randomIndex];
+export const generateWordProblem = async (): Promise<{ story: string; question: string; n1: number; d1: number; n2: number; d2: number; op: 'add'|'sub' }> => {
+  try {
+    // Add a small delay to simulate loading (optional, can be removed)
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    // Select a random problem - always return a valid problem
+    if (FALLBACK_PROBLEMS.length === 0) {
+      // Fallback in case array is empty (should never happen)
+      return {
+        story: "A friendly robot 🤖 is building a tower with colorful blocks. First it uses some blocks, then adds more.",
+        question: "What fraction of the tower is built?",
+        n1: 2, d1: 5, n2: 2, d2: 5, op: 'add'
+      };
+    }
+    
+    const randomIndex = Math.floor(Math.random() * FALLBACK_PROBLEMS.length);
+    return FALLBACK_PROBLEMS[randomIndex];
+  } catch (error) {
+    console.error("Error generating word problem:", error);
+    // Return the first problem as a safe fallback
+    return FALLBACK_PROBLEMS[0] || {
+      story: "A hungry dragon 🐉 found a giant cherry pie. He ate some for breakfast and some for lunch.",
+      question: "How much pie did the dragon eat in total?",
+      n1: 1, d1: 4, n2: 2, d2: 4, op: 'add'
+    };
+  }
 };

@@ -77,9 +77,9 @@ export default function App() {
 
         {/* View Container */}
         <div className="animate-fade-in">
-            {view === ViewMode.SIMPLIFY && <Simplifier />}
-            {view === ViewMode.ADDITION && <Calculator />}
-            {view === ViewMode.WORD_PROBLEMS && <WordProblems />}
+            {view === ViewMode.SIMPLIFY && <Simplifier key="simplify" />}
+            {view === ViewMode.ADDITION && <Calculator key="addition" />}
+            {view === ViewMode.WORD_PROBLEMS && <WordProblems key="word-problems" />}
         </div>
 
       </main>

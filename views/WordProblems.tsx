@@ -25,30 +25,51 @@ export const WordProblems: React.FC = () => {
   const [confetti, setConfetti] = useState<number[]>([]);
 
   const fetchProblem = async () => {
-    setLoading(true);
-    setFeedback('none');
-    setConfetti([]);
-    setUserNum(0);
-    const data = await generateWordProblem();
-    if (data) {
+    try {
+      setLoading(true);
+      setFeedback('none');
+      setConfetti([]);
+      setUserNum(0);
+      const data = await generateWordProblem();
+      // generateWordProblem always returns a valid problem, so this should always succeed
       setProblem(data);
       setUserDen(data.d1);
+    } catch (error) {
+      console.error("Error fetching problem:", error);
+      // Set a default problem if something goes wrong
+      setProblem({
+        story: "A hungry dragon 🐉 found a giant cherry pie. He ate some for breakfast and some for lunch.",
+        question: "How much pie did the dragon eat in total?",
+        n1: 1, d1: 4, n2: 2, d2: 4, op: 'add'
+      });
+      setUserDen(4);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const data = params.get('data');
-    if (params.get('mode') === ViewMode.WORD_PROBLEMS && data) {
-        try {
-            const decoded = JSON.parse(atob(data));
-            setProblem(decoded);
-            setUserDen(decoded.d1);
-        } catch(e) { fetchProblem(); }
-    } else {
-        fetchProblem();
-    }
+    const loadProblem = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const data = params.get('data');
+      if (params.get('mode') === ViewMode.WORD_PROBLEMS && data) {
+          try {
+              const decoded = JSON.parse(atob(data));
+              // Validate the decoded data has required fields
+              if (decoded && decoded.story && decoded.question && decoded.n1 && decoded.d1 && decoded.n2 && decoded.d2) {
+                setProblem(decoded);
+                setUserDen(decoded.d1);
+                return;
+              }
+          } catch(e) {
+              console.error("Error decoding shared problem:", e);
+          }
+      }
+      // If no valid shared problem, fetch a new one
+      await fetchProblem();
+    };
+    
+    loadProblem();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

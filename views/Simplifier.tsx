@@ -32,6 +32,7 @@ export const Simplifier: React.FC = () => {
 
   const handleAsk = async () => {
     setLoading(true);
+    // Small delay for better UX (the function already has a built-in delay)
     const text = await getExplanation("simplifying fractions", { numerator: num, denominator: den });
     setExplanation(text);
     setLoading(false);

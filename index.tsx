@@ -10,7 +10,9 @@ if (!rootElement) {
 // Register Service Worker for PWA functionality
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
+    // Use absolute path for service worker to avoid 404 errors
+    const swPath = '/sw.js';
+    navigator.serviceWorker.register(swPath)
       .then((registration) => {
         console.log('SW registered: ', registration);
       })

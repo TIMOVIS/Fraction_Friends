@@ -75,7 +75,7 @@ export const WordProblems: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center h-64 gap-4">
             <div className="w-12 h-12 border-4 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-xl text-slate-500 font-medium">Dreaming up a story...</p>
+            <p className="text-xl text-slate-500 font-medium">Getting a story ready...</p>
         </div>
     )
   }

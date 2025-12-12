@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Simplifier } from './views/Simplifier';
 import { Calculator } from './views/Calculator';
-import { WordProblems } from './views/WordProblems';
 import { ViewMode } from './types';
-import { Calculator as CalcIcon, Wand2, BookOpen, Pizza } from 'lucide-react';
+import { Calculator as CalcIcon, Wand2, Pizza } from 'lucide-react';
 
 export default function App() {
   const [view, setViewState] = useState<ViewMode>(() => {
     // Initialize view from URL if present
     const params = new URLSearchParams(window.location.search);
     const mode = params.get('mode') as ViewMode;
-    return Object.values(ViewMode).includes(mode) ? mode : ViewMode.SIMPLIFY;
+    // Only allow SIMPLIFY or ADDITION views
+    if (mode === ViewMode.SIMPLIFY || mode === ViewMode.ADDITION) {
+      return mode;
+    }
+    return ViewMode.SIMPLIFY;
   });
 
   const setView = (mode: ViewMode) => {
@@ -67,19 +70,12 @@ export default function App() {
                 label="Add" 
                 color="bg-pink-500" 
             />
-            <NavItem 
-                mode={ViewMode.WORD_PROBLEMS} 
-                icon={BookOpen} 
-                label="Story Time" 
-                color="bg-indigo-500" 
-            />
         </div>
 
         {/* View Container */}
         <div className="animate-fade-in">
             {view === ViewMode.SIMPLIFY && <Simplifier key="simplify" />}
             {view === ViewMode.ADDITION && <Calculator key="addition" />}
-            {view === ViewMode.WORD_PROBLEMS && <WordProblems key="word-problems" />}
         </div>
 
       </main>
